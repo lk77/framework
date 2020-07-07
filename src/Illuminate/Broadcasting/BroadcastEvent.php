@@ -56,6 +56,14 @@ class BroadcastEvent implements ShouldQueue
      */
     public function handle(Broadcaster $broadcaster)
     {
+        if(method_exists($this->event, 'broadcastUsing')) {
+            $customBroadcaster = $this->event->broadcastUsing();
+            if($customBroadcaster instanceof \Illuminate\Broadcasting\Broadcasters\Broadcaster)
+            {
+                $broadcaster = $customBroadcaster;
+            }
+        }
+        
         $name = method_exists($this->event, 'broadcastAs')
                 ? $this->event->broadcastAs() : get_class($this->event);
 
